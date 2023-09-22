@@ -38,20 +38,13 @@ export default class Endpoint {
         return (hostname.substr(-checkMainDomain.length) === checkMainDomain) ||
             (hostname.substr(-checkFQDNDomain.length) === checkFQDNDomain);
     }
+
+    private allowNonIntacctEndpointUrl: boolean;
+
     private _url: string;
     get url(): string {
         return this._url;
     }
-
-    private allowNonIntacctEndpointUrl: boolean;
-
-    private verifyEndpointUrl(address: string): void | never {
-        const parsedUrl = url.parse(address);
-        if (!Endpoint.isDomainValid(parsedUrl.hostname) && !this.allowNonIntacctEndpointUrl) {
-            throw new Error("Endpoint URL is not a valid " + Endpoint.DOMAIN_NAME + " domain name.");
-        }
-    }
-
     set url(address: string) {
         if (address == null || address === "") {
             address = Endpoint.DEFAULT_ENDPOINT;
@@ -60,6 +53,7 @@ export default class Endpoint {
         this.verifyEndpointUrl(address);
         this._url = address;
     }
+
     constructor(config: ClientConfig) {
         if (config.allowNonIntacctEndpointUrl == null) {
             this.allowNonIntacctEndpointUrl = process.env[Endpoint.ALLOW_NON_INTACCT_ENDPOINT_URL_ENV_NAME] === "true";
@@ -70,6 +64,13 @@ export default class Endpoint {
             this.url = process.env[Endpoint.ENDPOINT_URL_ENV_NAME];
         } else {
             this.url = config.endpointUrl;
+        }
+    }
+
+    private verifyEndpointUrl(address: string): void | never {
+        const parsedUrl = url.parse(address);
+        if (!Endpoint.isDomainValid(parsedUrl.hostname) && !this.allowNonIntacctEndpointUrl) {
+            throw new Error("Endpoint URL is not a valid " + Endpoint.DOMAIN_NAME + " domain name.");
         }
     }
 }
