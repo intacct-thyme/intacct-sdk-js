@@ -14,7 +14,6 @@
  */
 
 import * as chai from "chai";
-import * as mock from "mock-fs";
 import ClientConfig from "../../src/ClientConfig";
 import SenderCredentials from "../../src/Credentials/SenderCredentials";
 import SessionCredentials from "../../src/Credentials/SessionCredentials";
@@ -39,7 +38,6 @@ describe("SessionCredentials", () => {
         return done();
     });
     after((done) => {
-        mock.restore();
         return done();
     });
 

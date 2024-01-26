@@ -14,7 +14,6 @@
  */
 
 import * as chai from "chai";
-import * as mock from "mock-fs";
 import ClientConfig from "../../src/ClientConfig";
 import Endpoint from "../../src/Credentials/Endpoint";
 
@@ -33,7 +32,6 @@ describe("Endpoint", () => {
         return done();
     });
     after((done) => {
-        mock.restore();
         return done();
     });
 

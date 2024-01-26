@@ -14,9 +14,9 @@
  */
 
 import * as chai from "chai";
-import * as mock from "mock-fs";
 import ClientConfig from "../../src/ClientConfig";
 import SenderCredentials from "../../src/Credentials/SenderCredentials";
+import { rm, writeFile } from "fs/promises";
 
 describe("SenderCredentials", () => {
     const oldEnv = process.env;
@@ -33,7 +33,6 @@ describe("SenderCredentials", () => {
         return done();
     });
     after((done) => {
-        mock.restore();
         return done();
     });
 
@@ -86,15 +85,12 @@ describe("SenderCredentials", () => {
         );
     });
 
-    it("grabs credentials from the ini profile", () => {
+    it("grabs credentials from the ini profile", async () => {
         const ini = "[unittest]\n" +
             "sender_id = inisenderid\n" +
             "sender_password = inisenderpass\n" +
             "endpoint_url = https://unittest.intacct.com/ia/xml/xmlgw.phtml\n";
-        const files = {
-            "randomfile.ini": ini,
-        };
-        mock(files);
+        await writeFile('./randomfile.ini', ini);
         const config = new ClientConfig();
         config.profileFile = "randomfile.ini";
         config.profileName = "unittest";
@@ -102,17 +98,15 @@ describe("SenderCredentials", () => {
         chai.assert.equal(creds.senderId, "inisenderid");
         chai.assert.equal(creds.password, "inisenderpass");
         chai.assert.equal(creds.endpoint.url, "https://unittest.intacct.com/ia/xml/xmlgw.phtml");
+        await rm('./randomfile.ini');
     });
 
-    it("grabs credentials from the ini profile but allows config override of endpoint url", () => {
+    it("grabs credentials from the ini profile but allows config override of endpoint url", async () => {
         const ini = "[unittest]\n" +
             "sender_id = inisenderid\n" +
             "sender_password = inisenderpass\n" +
             "endpoint_url = https://unittest.intacct.com/ia/xml/xmlgw.phtml\n";
-        const files = {
-            "randomfile.ini": ini,
-        };
-        mock(files);
+        await writeFile('./randomfile.ini', ini);
         const config = new ClientConfig();
         config.profileFile = "randomfile.ini";
         config.profileName = "unittest";
@@ -121,5 +115,6 @@ describe("SenderCredentials", () => {
         chai.assert.equal(creds.senderId, "inisenderid");
         chai.assert.equal(creds.password, "inisenderpass");
         chai.assert.equal(creds.endpoint.url, "https://somethingelse.intacct.com/ia/xml/xmlgw.phtml");
+        await rm('./randomfile.ini');
     });
 });
