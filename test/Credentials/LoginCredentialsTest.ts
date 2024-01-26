@@ -14,7 +14,7 @@
  */
 
 import * as chai from "chai";
-import * as mock from "mock-fs";
+import { rm, writeFile } from "node:fs/promises";
 import ClientConfig from "../../src/ClientConfig";
 import LoginCredentials from "../../src/Credentials/LoginCredentials";
 import SenderCredentials from "../../src/Credentials/SenderCredentials";
@@ -39,7 +39,6 @@ describe("LoginCredentials", () => {
         return done();
     });
     after((done) => {
-        mock.restore();
         return done();
     });
 
@@ -143,15 +142,12 @@ describe("LoginCredentials", () => {
         );
     });
 
-    it("grabs credentials from the ini profile", () => {
+    it("grabs credentials from the ini profile", async () => {
         const ini = "[unittest]\n" +
             "company_id = inicompanyid\n" +
             "user_id = iniuserid\n" +
             "user_password = iniuserpass\n";
-        const files = {
-            "randomfile.ini": ini,
-        };
-        mock(files);
+        await writeFile('./randomfile.ini', ini);
         const config = new ClientConfig();
         config.profileFile = "randomfile.ini";
         config.profileName = "unittest";
@@ -160,18 +156,16 @@ describe("LoginCredentials", () => {
         chai.assert.isUndefined(creds.entityId);
         chai.assert.equal(creds.userId, "iniuserid");
         chai.assert.equal(creds.password, "iniuserpass");
+        await rm('./randomfile.ini');
     });
 
-    it("grabs credentials with entity from the ini profile", () => {
+    it("grabs credentials with entity from the ini profile", async () => {
         const ini = "[unittest]\n" +
             "company_id = inicompanyid\n" +
             "entity_id = inientityid\n" +
             "user_id = iniuserid\n" +
             "user_password = iniuserpass\n";
-        const files = {
-            "randomfile.ini": ini,
-        };
-        mock(files);
+        await writeFile('./randomfile.ini', ini);
         const config = new ClientConfig();
         config.profileFile = "randomfile.ini";
         config.profileName = "unittest";
@@ -180,5 +174,6 @@ describe("LoginCredentials", () => {
         chai.assert.equal(creds.entityId, "inientityid");
         chai.assert.equal(creds.userId, "iniuserid");
         chai.assert.equal(creds.password, "iniuserpass");
+        await rm('./randomfile.ini');
     });
 });

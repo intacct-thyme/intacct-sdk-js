@@ -14,7 +14,8 @@
  */
 
 import * as chai from "chai";
-import * as mock from "mock-fs";
+import { mkdir, rm, writeFile } from "node:fs/promises";
+import { join } from "node:path";
 import ClientConfig from "../../src/ClientConfig";
 import ProfileCredentialProvider from "../../src/Credentials/ProfileCredentialProvider";
 
@@ -37,25 +38,24 @@ describe("ProfileCredentialsProvider", () => {
         "user_id = iniuserid\n" +
         "user_password = iniuserpass\n";
 
-    before((done) => {
-        return done();
+    before(async () => {
+        await mkdir(join(ProfileCredentialProvider.getHomeDirProfile(), '..'), {
+            recursive: true,
+        });
     });
     beforeEach((done) => {
         return done();
     });
     afterEach((done) => {
-        mock.restore();
         return done();
     });
     after((done) => {
         return done();
     });
 
-    it("should return credentials from default profile", (done) => {
-        const files = {};
-        const homeDir = ProfileCredentialProvider.getHomeDirProfile();
-        files[homeDir] = testIni;
-        mock(files);
+    it("should return credentials from default profile", async () => {
+        const homeIntacctDirFile = ProfileCredentialProvider.getHomeDirProfile();
+        await writeFile(homeIntacctDirFile, testIni);
 
         const config = new ClientConfig();
         const loginCreds = ProfileCredentialProvider.getLoginCredentials(config);
@@ -71,14 +71,12 @@ describe("ProfileCredentialsProvider", () => {
         chai.assert.equal(senderCreds.senderPassword, "defsenderpass");
         chai.assert.equal(senderCreds.endpointUrl, "https://unittest.intacct.com/ia/xmlgw.phtml");
 
-        done();
+        await rm(homeIntacctDirFile)
     });
 
-    it("should return credentials from a specific profile", (done) => {
-        const files = {};
-        const homeDir = ProfileCredentialProvider.getHomeDirProfile();
-        files[homeDir] = testIni;
-        mock(files);
+    it("should return credentials from a specific profile", async () => {
+        const homeIntacctDirFile = ProfileCredentialProvider.getHomeDirProfile();
+        await writeFile(homeIntacctDirFile, testIni);
 
         const config = new ClientConfig();
         config.profileName = "unittest";
@@ -89,14 +87,12 @@ describe("ProfileCredentialsProvider", () => {
         chai.assert.equal(loginCreds.userId, "iniuserid");
         chai.assert.equal(loginCreds.userPassword, "iniuserpass");
 
-        done();
+        await rm(homeIntacctDirFile)
     });
 
-    it("should return credentials with entity from a specific profile", (done) => {
-        const files = {};
-        const homeDir = ProfileCredentialProvider.getHomeDirProfile();
-        files[homeDir] = testIni;
-        mock(files);
+    it("should return credentials with entity from a specific profile", async () => {
+        const homeIntacctDirFile = ProfileCredentialProvider.getHomeDirProfile();
+        await writeFile(homeIntacctDirFile, testIni);
 
         const config = new ClientConfig();
         config.profileName = "entity";
@@ -107,14 +103,12 @@ describe("ProfileCredentialsProvider", () => {
         chai.assert.equal(loginCreds.userId, "iniuserid");
         chai.assert.equal(loginCreds.userPassword, "iniuserpass");
 
-        done();
+        await rm(homeIntacctDirFile)
     });
 
     it("should return no credentials from missing ini", () => {
-        const files = {};
         // const homeDir = ProfileCredentialProvider.getHomeDirProfile();
         // files[homeDir] = testIni;
-        mock(files);
 
         const config = new ClientConfig();
         config.profileName = "unittest";
