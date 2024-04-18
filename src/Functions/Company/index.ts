@@ -29,6 +29,7 @@ export { default as CustomAllocationSplit } from "./CustomAllocationSplit";
 export { default as DepartmentCreate } from "./DepartmentCreate";
 export { default as DepartmentDelete } from "./DepartmentDelete";
 export { default as DepartmentUpdate } from "./DepartmentUpdate";
+export { default as GetUserPermissions } from "./GetUserPermissions";
 export { default as LocationCreate } from "./LocationCreate";
 export { default as LocationDelete } from "./LocationDelete";
 export { default as LocationUpdate } from "./LocationUpdate";
