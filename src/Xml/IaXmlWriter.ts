@@ -194,4 +194,13 @@ export default class IaXmlWriter {
             }
         }
     }
+
+    public writeCDATA(value: string): void {
+        // Remove existing CDATA tags
+        let cdataValue = value;
+        if (cdataValue.startsWith("<![CDATA[") && cdataValue.endsWith("]]>")) {
+            cdataValue = cdataValue.substring(9, cdataValue.length - 3);
+        }
+        this._writer = this._writer.cdata(cdataValue);
+    }
 }
