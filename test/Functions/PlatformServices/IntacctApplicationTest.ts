@@ -17,7 +17,6 @@ import * as chai from "chai";
 import IntacctApplication from "../../../src/Functions/PlatformServices/IntacctApplication";
 import XmlObjectTestHelper from "../../Xml/XmlObjectTestHelper";
 
-
 const expected = `<?xml version="1.0" encoding="utf-8" ?>
 <test>
     <function controlid="unittest">
