@@ -21,7 +21,6 @@ import IaXmlWriter from "../../Xml/IaXmlWriter";
 import AbstractFunction from "../AbstractFunction";
 
 export default class InstallApplication extends AbstractFunction {
-
     public xmlData: string;
 
     public writeXml(xml: IaXmlWriter): void {
@@ -36,7 +35,8 @@ export default class InstallApplication extends AbstractFunction {
         xml.writeStartElement("appxml");
 
         // Example XML data:
-        // <![CDATA[<application id="10032" origId="100227@10006" orderNo="16" isSystem="F" version="1" companyNo="34466622" ></application>]]>
+        // <![CDATA[<application id="10032" origId="100227@10006" orderNo="16"
+        // isSystem="F" version="1" companyNo="34466622" ></application>]]>
         xml.writeCDATA(this.xmlData);
 
         xml.writeEndElement(); // appxml
