@@ -10,6 +10,7 @@ export { default as GetCompanyPrefs } from "./GetCompanyPrefs";
 export { default as GetDimensions } from "./GetDimensions";
 export { default as GetDimensionRelationships } from "./GetDimensionRelationships";
 export { default as GetDimensionRestrictedData } from "./GetDimensionRestrictedData";
+export { default as GetFinancialSetup } from "./GetFinancialSetup";
 
 import * as Query from "./Query/index";
 import * as NewQuery from "./NewQuery/index";
