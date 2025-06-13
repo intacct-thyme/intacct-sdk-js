@@ -21,7 +21,8 @@ import IaXmlWriter from "../../Xml/IaXmlWriter";
 import AbstractFunction from "../AbstractFunction";
 
 export default class ReadUserFormatting extends AbstractFunction {
-  public key: number;
+  public key?: number;
+  public userId?: string;
 
   public writeXml(xml: IaXmlWriter): void {
     xml.writeStartElement("function");
@@ -29,9 +30,20 @@ export default class ReadUserFormatting extends AbstractFunction {
 
     xml.writeStartElement("readUserFormatting");
 
-    xml.writeElement("key", this.key, true);
+    if (this.key === undefined && this.userId === undefined) {
+      throw new Error("Either key or userId must be set for ReadUserFormatting");
+    }
+    if (this.key !== undefined && this.userId !== undefined) {
+      throw new Error("Only one of key or userId can be set for ReadUserFormatting");
+    }
+    if (this.key !== undefined) {
+      xml.writeElement("key", this.key, true);
+    }
+    if (this.userId !== undefined) {
+      xml.writeElement("userId", this.userId, true);
+    }
 
-    xml.writeEndElement(); // inspect
+    xml.writeEndElement(); // readUserFormatting
 
     xml.writeEndElement(); // function
   }

@@ -13,6 +13,7 @@
  * permissions and limitations under the License.
  */
 
+import { expect } from "chai";
 import ReadUserFormatting from "../../../src/Functions/Common/ReadUserFormatting";
 import XmlObjectTestHelper from "../../Xml/XmlObjectTestHelper";
 
@@ -43,5 +44,37 @@ describe("ReadUserFormatting", () => {
     record.key = 1;
 
     XmlObjectTestHelper.CompareXml(expected, record);
+  });
+
+  it("should run readUserFormatting with userId", () => {
+    const expected = `<?xml version="1.0" encoding="utf-8" ?>
+<test>
+    <function controlid="unittest">
+        <readUserFormatting>
+            <userId>1</userId>
+        </readUserFormatting>
+    </function>
+</test>`;
+
+    const record = new ReadUserFormatting("unittest");
+    record.userId = "1";
+
+    XmlObjectTestHelper.CompareXml(expected, record);
+  });
+
+  it('should throw error if neither key nor userId is set', () => {
+    const record = new ReadUserFormatting("unittest");
+    expect(() => {
+      XmlObjectTestHelper.CompareXml("", record);
+    }).to.throw("Either key or userId must be set for ReadUserFormatting");
+  });
+
+  it('should throw error if both key and userId are set', () => {
+    const record = new ReadUserFormatting("unittest");
+    record.key = 1;
+    record.userId = "1";
+    expect(() => {
+      XmlObjectTestHelper.CompareXml("", record);
+    }).to.throw("Only one of key or userId can be set for ReadUserFormatting");
   });
 });
