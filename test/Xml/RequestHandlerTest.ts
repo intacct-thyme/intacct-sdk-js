@@ -334,9 +334,14 @@ describe("RequestHandler", () => {
         try {
             await requestHandler.executeOnline(contentBlock);
             chai.assert.isOk(false, "Expected exception not thrown");
-        } catch (ex) {
+        } catch (ex: any) {
             chai.assert.instanceOf(ex, FetchError);
-            chai.assert.equal(ex.code, "524");
+            if (ex && typeof ex === 'object' && 'code' in ex) {
+                chai.assert.equal(ex.code, "524");
+            } else {
+                chai.assert.fail("Expected FetchError with code property");
+            }
+
         }
     });
     it("should execute with a debug logger", async () => {
@@ -383,7 +388,7 @@ describe("RequestHandler", () => {
             .reply(200, xml, headers);
 
         const logger = winston.createLogger({
-            format: winston.format.printf((info) => info.message),
+            format: winston.format.printf((info) => info.message as string),
             transports: [
                 new winston.transports.Console({ level: "debug" }),
             ],
@@ -431,7 +436,7 @@ describe("RequestHandler", () => {
             .reply(200, xml, headers);
 
         const logger = winston.createLogger({
-            format: winston.format.printf((info) => info.message),
+            format: winston.format.printf((info) => info.message as string),
             transports: [
                 new winston.transports.Console({ level: "debug" }),
             ],
