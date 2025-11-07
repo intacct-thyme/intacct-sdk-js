@@ -18,11 +18,8 @@
   "typedocOptions": {
     "out": "doc",
     "exclude": "**/*/index.ts",
-    "module": "commonjs",
-    "target": "es2015",
-    "mode": "modules",
     "readme": "none",
-    "theme": "minimal",
+    "theme": "default",
     "name": "Sage Intacct SDK for JavaScript"
   }
 }
